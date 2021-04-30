@@ -22,6 +22,9 @@
         .card.third {
             grid-column: 6 / 12;
         }
+        .card.third-short {
+            grid-column: 6 / 9;
+        }
         .card.top-users {
             grid-column: 1 / 6;
             grid-row: 2 / 5;
@@ -34,6 +37,9 @@
         }
         .card.about {
             grid-column: 6 / 12;
+        }
+        .card.mudae {
+            grid-column: 9 / 12;
         }
     }
 </style>

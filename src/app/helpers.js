@@ -33,6 +33,22 @@ export const getFavoriteWords = (words) => {
     return array.sort((a, b) => object[b] - object[a]).map((word) => ({ word: word, count: object[word] })).slice(0, 2);
 };
 
+export const mapMudaeWords = (words) => {
+    const map = {
+
+    };
+
+    words = words.flat(3);
+    for(const word of words) {
+        if(map[word] === undefined) {
+            map[word] = 0;
+        }
+        map[word]++;
+    }
+
+    return map;
+}
+
 export const getGitHubContributors = () => {
     return new Promise((resolve, reject) => {
         const cachedExpiresAt = localStorage.getItem('contributors_cache_expires_at');

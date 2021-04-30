@@ -30,6 +30,10 @@
     };
     
     const hoursLabels = new Array(24).fill(0).map((v, i) => i == 0 ? '12am' : i < 12 ? `${i}am` : i == 12 ? '12pm' : `${i-12}pm`);
+
+    const entries = Object.entries($data.mudae.words).sort((a, b) => b[1] - a[1]);
+    const keys = entries.map(a => a[0]);
+    const values = entries.map(a => a[1]);
     </script>
     
     <div class="statistics" transition:fly="{{ y: 200, duration: 1000 }}">
@@ -121,7 +125,8 @@
                     xAxisMode: 'tick'
                 }}" type="bar" />
             </Card>
-            <Card name="third">
+            
+            <Card name="{$data.mudae.enabled ? "third-short" : "third" }">
                 <FunFact
                     svg="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
                     content="You joined % voice channels"
@@ -148,6 +153,24 @@
                     count="{ $data.slashCommandUsedCount }"
                 />
             </Card>
+            {#if $data.mudae.enabled}
+                <Card name="mudae" >
+                    <h1>Your Mudae stats</h1>
+                    <p> The list of command you use the most</p>
+                    <Chart data={{
+                        labels: keys,
+                        datasets: [
+                            {
+                                name: 'Commands',
+                                values: values
+                            }
+                        ]
+                    }} axisOptions="{{
+                        xAxisMode: 'tick'
+                    }}" type="percentage"
+                    maxSlices=10/>
+                </Card>
+            {/if }
             <Card name="about">
                 <div style="text-align: center;">
                     <h2>About this project</h2>

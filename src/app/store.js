@@ -57,6 +57,13 @@ if (isDemo) {
             total: 500,
             list: 'Super Mega Nitro ($500)'
         },
+        mudae: {
+            enabled: true,
+            words: {
+                $ma: 1,
+                $mu: 2
+            }
+        },
         ...analytics
     };
 }

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import eventsData from './events.json';
 import { loadEstimatedTime, loadTask } from './store';
-import { getCreatedTimestamp, getFavoriteWords, generateAvatarURL } from './helpers';
+import { getCreatedTimestamp, getFavoriteWords, generateAvatarURL, mapMudaeWords } from './helpers';
 import { DecodeUTF8 } from 'fflate';
 import { snakeCase } from 'snake-case';
 
@@ -45,7 +45,8 @@ const parseCSV = (input) => {
             id: m.ID,
             timestamp: m.Timestamp,
             length: m.Contents.length,
-            words: m.Contents.split(' ')
+            words: m.Contents.split(' '),
+            isMudae: m.Contents.startsWith('$')
             // content: m.Contents,
             // attachments: m.Attachments
         }));
@@ -122,6 +123,10 @@ export const extractData = async (files) => {
         payments: {
             total: 0,
             list: ''
+        },
+        mudae: {
+            enabled: false,
+            words: {}
         }
     };
 
@@ -207,7 +212,23 @@ export const extractData = async (files) => {
     console.log(`[debug] ${extractedData.channels.length} channels loaded.`);
 
     const words = extractedData.channels.map((channel) => channel.messages).flat().map((message) => message.words).flat().filter((w) => w.length > 5);
+    
+    const mudaeWords = extractedData.channels
+        .map((channel) => channel.messages)
+        .flat()
+        .filter((message) => message.isMudae)
+        .map((message) => message.words[0])
+        .flat();
+    
     extractedData.favoriteWords = getFavoriteWords(words);
+    
+    if(mudaeWords.length) {
+        extractedData.mudae = {
+            enabled: true,
+            words: mapMudaeWords(mudaeWords)
+        }
+    }
+
     for (let wordData of extractedData.favoriteWords) {
         const userID = parseMention(wordData.word);
         if (userID) {
